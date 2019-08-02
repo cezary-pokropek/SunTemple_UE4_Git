@@ -24,7 +24,7 @@
 // Sets default values
 AMain::AMain()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Create Camera Boom (pulls towards the player if there's a collision)
@@ -102,13 +102,20 @@ void AMain::BeginPlay()
 	FString Map = GetWorld()->GetMapName();
 	Map.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
 
+	/**
 	if (Map != "SunTemple")
 	{
-		LoadGameNoSwitch();
-		if (MainPlayerController)
-		{
-			MainPlayerController->GameModeOnly();
-		}
+	LoadGameNoSwitch();
+	if (MainPlayerController)
+	{
+		MainPlayerController->GameModeOnly();
+	}
+	}
+	*/
+	LoadGameNoSwitch();
+	if (MainPlayerController)
+	{
+		MainPlayerController->GameModeOnly();
 	}
 
 }
@@ -136,7 +143,7 @@ void AMain::Tick(float DeltaTime)
 			{
 				Stamina -= DeltaStamina;
 			}
-			
+
 			if (bMovingForward || bMovingRight)
 			{
 				SetMovementStatus(EMovementStatus::EMS_Sprinting);
@@ -528,7 +535,7 @@ void AMain::PlaySwingSound()
 	{
 		UGameplayStatics::PlaySound2D(this, EquippedWeapon->SwingSound);
 	}
-	
+
 }
 
 
@@ -665,10 +672,11 @@ void AMain::LoadGame(bool SetPosition)
 		if (Weapons)
 		{
 			FString WeaponName = LoadGameInstance->CharacterStats.WeaponName;
-
-			AWeapon* WeaponToEquip = GetWorld()->SpawnActor<AWeapon>(Weapons->WeaponMap[WeaponName]);
-			WeaponToEquip->Equip(this);
-
+			if (WeaponName != TEXT(""))
+			{
+				AWeapon* WeaponToEquip = GetWorld()->SpawnActor<AWeapon>(Weapons->WeaponMap[WeaponName]);
+				WeaponToEquip->Equip(this);
+			}
 		}
 	}
 
@@ -709,9 +717,11 @@ void AMain::LoadGameNoSwitch()
 		{
 			FString WeaponName = LoadGameInstance->CharacterStats.WeaponName;
 
-			AWeapon* WeaponToEquip = GetWorld()->SpawnActor<AWeapon>(Weapons->WeaponMap[WeaponName]);
-			WeaponToEquip->Equip(this);
-
+			if (WeaponName != TEXT(""))
+			{
+				AWeapon* WeaponToEquip = GetWorld()->SpawnActor<AWeapon>(Weapons->WeaponMap[WeaponName]);
+				WeaponToEquip->Equip(this);
+			}
 		}
 	}
 
